@@ -84,9 +84,9 @@ public class indexer {
 
         for (String keyword : key_id_freq_Hash.keySet()) {
             float weight = 0.0f;
-            int df = 0;
-            int tf = 0;
-            int N = docNodes.getLength();
+            float df = 0;
+            float tf = 0;
+            float N = docNodes.getLength();
             String value = new String();
             ArrayList<HashMap> arrayList = key_id_freq_Hash.get(keyword);
             int array_size = arrayList.size();
@@ -106,12 +106,13 @@ public class indexer {
                 }
                 if (df != 0) {
                     weight = (float) (tf * Math.log(N / df));
-                    weight = (float) (Math.round(weight * 100) / 100.0);
+                    weight = (float) (Math.round(weight * 100) / 100.00);
                 }else {
                     weight =0.0f;
                 }
                 value += j + " " + weight + " ";
             }
+           // System.out.println(keyword+ " -> " + value);
             result_HashMap.put(keyword,value);
         }
 
