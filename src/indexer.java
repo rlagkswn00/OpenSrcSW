@@ -73,7 +73,7 @@ public class indexer {
                     key_id_freq_Hash.put(key, id_freq_ArrayList);
                     //System.out.println(key_id_freq_Hash.keySet());
                 }
-     정          //for(int k = 0 ; k < id_freq_ArrayList.size() ; k++)
+               //for(int k = 0 ; k < id_freq_ArrayList.size() ; k++)
                 //   System.out.println(i+" "+key_id_freq_Hash.get(key).get(0));
 
             }
