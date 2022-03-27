@@ -73,7 +73,7 @@ public class indexer {
                     key_id_freq_Hash.put(key, id_freq_ArrayList);
                     //System.out.println(key_id_freq_Hash.keySet());
                 }
-                //for(int k = 0 ; k < id_freq_ArrayList.size() ; k++)
+     정          //for(int k = 0 ; k < id_freq_ArrayList.size() ; k++)
                 //   System.out.println(i+" "+key_id_freq_Hash.get(key).get(0));
 
             }
@@ -106,7 +106,7 @@ public class indexer {
                 }
                 if (df != 0) {
                     weight = (float) (tf * Math.log(N / df));
-                    weight = (float) (Math.round(weight * 100) / 100.00);
+                    weight = (float) (Math.round(weight * 100) / 100.0);
                 }else {
                     weight =0.0f;
                 }

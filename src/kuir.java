@@ -22,7 +22,7 @@ public class kuir {
         else if(command.equals("-i")) {
             indexer indexer = new indexer(path);
             indexer.indexer();
-            //indexer.printHash();
+           // indexer.printHash();
         }
     }
 }
