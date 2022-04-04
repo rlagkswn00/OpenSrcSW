@@ -10,6 +10,9 @@ public class kuir {
 
         String command = args[0];
         String path = args[1];
+        String query = null;
+        if(args.length>2)
+            query = args[3];
 
         if(command.equals("-c")) {
             makeCollection collection = new makeCollection(path);
@@ -22,7 +25,11 @@ public class kuir {
         else if(command.equals("-i")) {
             indexer indexer = new indexer(path);
             indexer.indexer();
-           // indexer.printHash();
+           //indexer.printHash();
+        }else if(command.equals("-s")) {
+            searcher searcher= new searcher(path,query);
+            searcher.searcher();
+
         }
     }
 }
