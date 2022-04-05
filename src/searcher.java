@@ -52,15 +52,15 @@ public class searcher {
                 String[] tmp = splited_values.get(kwrd[i]);
                 float weight = Float.parseFloat(tmp[2 * k + 1]);
                 innerproduct += (tf[i] * weight);
-                System.out.println(weight + " " + tmp[2 * k + 1] + " " + i);
+                //    System.out.println(weight + " " + tmp[2 * k + 1] + " " + i);
 
             }
             sum_innerProduct[k] += innerproduct;
-            System.out.println("sum_innerproduckt = "+k+" "+sum_innerProduct[k]);
+            //  System.out.println("sum_innerproduckt = "+k+" "+sum_innerProduct[k]);
         }
 
         float original_innerProduct[] = new float[sum_innerProduct.length];
-        for(int i = 0 ; i < sum_innerProduct.length ; i ++){
+        for (int i = 0; i < sum_innerProduct.length; i++) {
             original_innerProduct[i] = sum_innerProduct[i];
         }
         Arrays.sort(sum_innerProduct); // 오름차순 정렬 한다.
@@ -131,19 +131,22 @@ public class searcher {
 
         //필요한 해시맵만 저장
         for (int i = 0; i < kl.size(); i++) {
-            kwrd_hashmap_string[i] = all_hashmap.get(kwrd[i].getString());
-            tf[i] = kwrd[i].getCnt();
-
-            System.out.println(kwrd[i].getString() + " " + kwrd_hashmap_string[i] + " " + tf[i]);
+            if(all_hashmap.containsKey(kwrd[i].getString())){
+                kwrd_hashmap_string[i] = all_hashmap.get(kwrd[i].getString());
+                tf[i] = kwrd[i].getCnt();
+            }else{
+                kwrd_hashmap_string[i] = "0 0.0 1 0.0 2 0.0 3 0.0 4 0.0";
+            }
+             // System.out.println(kwrd[i].getString() + " " + kwrd_hashmap_string[i] + " " + tf[i]);
         }
 
-        for(String s : menus){
-            System.out.println(s);
-        }
+        //   for(String s : menus){
+        //    System.out.println(s);
+        // }
         top3 = CalcSim(kwrd_hashmap_string, kwrd, tf);
-        if (top3[0] == -2 && top3[1] == -2 && top3[2] == -2){
+        if (top3[0] == -2 && top3[1] == -2 && top3[2] == -2) {
             System.out.println("검색된 문서가 없습니다.");
-        }else{
+        } else {
             for (int i : top3) {
                 if (i == -2) {
                     continue;
