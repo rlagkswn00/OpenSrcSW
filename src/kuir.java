@@ -26,6 +26,10 @@ public class kuir {
             indexer indexer = new indexer(path);
             indexer.indexer();
            //indexer.printHash();
+        }else if(command.equals("-s")) {
+            searcher searcher= new searcher(path,query);
+            searcher.searcher();
+
         }
     }
 }
