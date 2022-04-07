@@ -25,7 +25,7 @@ public class searcher {
         this.query = query;
     }
 
-    public int[] CalcSim(String[] kwrd_hashmap_string, Keyword[] kwrd, int[] tf) {
+    public int[] InnerProduct(String[] kwrd_hashmap_string, Keyword[] kwrd, int[] tf) {
         //query_id곱 결과 저장 배열 i번째 문서에 들어있는 내용과 쿼리의 결과문
         int[] top3 = new int[3];
 
@@ -143,7 +143,7 @@ public class searcher {
         //   for(String s : menus){
         //    System.out.println(s);
         // }
-        top3 = CalcSim(kwrd_hashmap_string, kwrd, tf);
+        top3 = InnerProduct(kwrd_hashmap_string, kwrd, tf);
         if (top3[0] == -2 && top3[1] == -2 && top3[2] == -2) {
             System.out.println("검색된 문서가 없습니다.");
         } else {
