@@ -25,8 +25,117 @@ public class searcher {
         this.query = query;
     }
 
-    public int[] CalcSim(String[] kwrd_hashmap_string, Keyword[] kwrd, int[] tf) {
-            return null;
+    public float[] InnerProduct(String[] kwrd_hashmap_string, Keyword[] kwrd, int[] tf) {
+        //query_id곱 결과 저장 배열 i번째 문서에 들어있는 내용과 쿼리의 결과문
+        int[] top3 = new int[3];
+
+        for (int i = 0; i < top3.length; i++)
+            top3[i] = -1;
+
+        float[] sum_innerProduct = new float[5];
+        //문자 스플릿 하여 해당\
+        HashMap<Keyword, String[]> splited_values = new HashMap<Keyword, String[]>();
+
+        for (int i = 0; i < kwrd_hashmap_string.length; i++) {
+            String[] splited_value = kwrd_hashmap_string[i].split(" ");
+            splited_values.put(kwrd[i], splited_value);
+        }
+
+//        저장
+        for (int k = 0; k < sum_innerProduct.length; k++) {
+            float innerproduct = 0f;
+
+            for (int i = 0; i < kwrd_hashmap_string.length; i++) {
+                // for(String s : splited_value)
+                //  System.out.println(s);
+                String[] tmp = splited_values.get(kwrd[i]);
+                float weight = Float.parseFloat(tmp[2 * k + 1]);
+                innerproduct += (tf[i] * weight);
+                //    System.out.println(weight + " " + tmp[2 * k + 1] + " " + i);
+
+            }
+            sum_innerProduct[k] += innerproduct;
+            //  System.out.println("sum_innerproduckt = "+k+" "+sum_innerProduct[k]);
+        }
+
+        float original_innerProduct[] = new float[sum_innerProduct.length];
+        for (int i = 0; i < sum_innerProduct.length; i++) {
+            original_innerProduct[i] = sum_innerProduct[i];
+        }
+        Arrays.sort(sum_innerProduct); // 오름차순 정렬 한다.
+
+        for (int i = sum_innerProduct.length - 1; i > sum_innerProduct.length - 4; i--) {
+            float sorted_num = sum_innerProduct[i];
+            if (sorted_num == 0) {
+                top3[sum_innerProduct.length - 1 - i] = -2;
+                continue;
+            }
+            for (int j = 0; j < original_innerProduct.length; j++) {
+                float original_id_num = original_innerProduct[j];
+                if (original_id_num == sorted_num) {
+                    top3[sum_innerProduct.length - 1 - i] = j;
+                    original_innerProduct[j] = -1;
+                    break;
+                }
+            }
+        }
+
+        return original_innerProduct;
+    }
+
+    public int[] CalcSim(float[] innerProducts, String[] kwrd_hashmap_string, Keyword[] kwrd, int[] tf) {
+        //innerProducts = i번째 문서 -> innerProducts값
+        float [] cosine_sim = new float[kwrd.length];
+        int top3[] = new int[3];
+        //문자 스플릿 하여 해당\
+        HashMap<Keyword, String[]> splited_values = new HashMap<Keyword, String[]>();
+
+        for (int i = 0; i < kwrd_hashmap_string.length; i++) {
+            String[] splited_value = kwrd_hashmap_string[i].split(" ");
+            splited_values.put(kwrd[i], splited_value);
+        }
+
+//        저장
+        for (int k = 0; k < innerProducts.length; k++) {
+            float now_innerProduct = innerProducts[k];
+            float now_denominator1 = 0f;
+            float now_denominator2 = 0f;
+
+            for (int i = 0; i < kwrd_hashmap_string.length; i++) {
+                // for(String s : splited_value)
+                //  System.out.println(s);
+                String[] tmp = splited_values.get(kwrd[i]);
+                float weight = Float.parseFloat(tmp[2 * k + 1]);
+                now_denominator1+=Math.pow(tf[i],2);
+                now_denominator2+=Math.pow(weight,2);
+                //    System.out.println(weight + " " + tmp[2 * k + 1] + " " + i);
+            }
+            //  System.out.println("sum_innerproduckt = "+k+" "+sum_innerProduct[k]);
+            cosine_sim[k] = now_innerProduct / now_denominator1*now_denominator2;
+        }
+
+        float original_cosine_sim[] = new float[cosine_sim.length];
+        for (int i = 0; i < cosine_sim.length; i++) {
+            original_cosine_sim[i] = cosine_sim[i];
+        }
+        Arrays.sort(cosine_sim); // 오름차순 정렬 한다.
+
+        for (int i = cosine_sim.length - 1; i > cosine_sim.length - 4; i--) {
+            float sorted_num = cosine_sim[i];
+            if (sorted_num == 0) {
+                top3[cosine_sim.length - 1 - i] = -2;
+                continue;
+            }
+            for (int j = 0; j < original_cosine_sim.length; j++) {
+                float original_id_num = original_cosine_sim[j];
+                if (original_id_num == sorted_num) {
+                    top3[cosine_sim.length - 1 - i] = j;
+                    original_cosine_sim[j] = -1;
+                    break;
+                }
+            }
+        }
+        return top3;
     }
 
     public void searcher() throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException {
@@ -56,7 +165,7 @@ public class searcher {
         //결과 top3가 저장될 string 공간
         //012 0번, 1번 2번 순으로 내림차순 정렬된 값 저장 예정
 
-        int[] top3 = new int[3];
+        float[] innerProduct_top3 = new float[3];
 
         KeywordExtractor ke = new KeywordExtractor();
         KeywordList kl = ke.extractKeyword(this.query, true);
@@ -76,10 +185,10 @@ public class searcher {
 
         //필요한 해시맵만 저장
         for (int i = 0; i < kl.size(); i++) {
-            if(all_hashmap.containsKey(kwrd[i].getString())){
+            if (all_hashmap.containsKey(kwrd[i].getString())) {
                 kwrd_hashmap_string[i] = all_hashmap.get(kwrd[i].getString());
                 tf[i] = kwrd[i].getCnt();
-            }else{
+            } else {
                 kwrd_hashmap_string[i] = "0 0.0 1 0.0 2 0.0 3 0.0 4 0.0";
             }
             // System.out.println(kwrd[i].getString() + " " + kwrd_hashmap_string[i] + " " + tf[i]);
@@ -88,7 +197,20 @@ public class searcher {
         //   for(String s : menus){
         //    System.out.println(s);
         // }
-        top3 = CalcSim(kwrd_hashmap_string, kwrd, tf);
+        innerProduct_top3 = InnerProduct(kwrd_hashmap_string, kwrd, tf);
+        if (innerProduct_top3[0] == -2 && innerProduct_top3[1] == -2 && innerProduct_top3[2] == -2) {
+            System.out.println("검색된 문서가 없습니다.");
+        } else {
+            for (float i : innerProduct_top3) {
+                if (i == -2) {
+                    continue;
+                } else {
+                    System.out.println(i);
+                }
+            }
+        }
+        /*int top3[] = CalcSim(innerProduct_top3,kwrd_hashmap_string,kwrd,tf);
+
         if (top3[0] == -2 && top3[1] == -2 && top3[2] == -2) {
             System.out.println("검색된 문서가 없습니다.");
         } else {
@@ -100,7 +222,7 @@ public class searcher {
                 }
             }
         }
-
+        */
 
 /*
         //top3값에 따라 문자 출력
