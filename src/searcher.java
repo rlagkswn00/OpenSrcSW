@@ -63,23 +63,7 @@ public class searcher {
             original_innerProduct[i] = sum_innerProduct[i];
         }
         Arrays.sort(sum_innerProduct); // 오름차순 정렬 한다.
-/*
-        for (int i = sum_innerProduct.length - 1; i > sum_innerProduct.length - 4; i--) {
-            float sorted_num = sum_innerProduct[i];
-            if (sorted_num == 0) {
-                top3[sum_innerProduct.length - 1 - i] = -2;
-                continue;
-            }
-            for (int j = 0; j < original_innerProduct.length; j++) {
-                float original_id_num = original_innerProduct[j];
-                if (original_id_num == sorted_num) {
-                    top3[sum_innerProduct.length - 1 - i] = j;
-                    original_innerProduct[j] = -1;
-                    break;
-                }
-            }
-        }
-*/
+
         return original_innerProduct;
     }
 
