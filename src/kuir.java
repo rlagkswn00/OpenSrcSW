@@ -30,6 +30,10 @@ public class kuir {
             searcher searcher= new searcher(path,query);
             searcher.searcher();
 
+        }else if(command.equals("-m")) {
+            MidTerm midterm = new MidTerm(path,query);
+            midterm.showSnippet();
+
         }
     }
 }
